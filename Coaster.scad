@@ -2,11 +2,23 @@
 Customizable Hex Coaster
 by Mike Kasberg
 
+ - High edges to catch condensation and small spills
+ - Mini hexagons provide a dry surface for your glass to rest on
+ - (Optional) blank center to add your own text
+ - Customize the size and other parameters
+ - Try slicing with a color change on the mini hexes (and your text)
+
 The defaults below are reasonable, but you can customize them
 for a different size or different look.
 
 13 rows works very well. Other numbers may lose symmetry, but feel
 free to experiment.
+
+Set space_for_text to true to get a blank spot in the center where
+you can add text (or anything else). Add text with Prusa Slicer 2.6+
+or with OpenSCAD, or any other software. I recomment setting the text
+thickness (height off the surface) to be the same as inner_wall_height
+below.
 
 LICENSE: Creative Commons - Attribution (CC BY 4.0)
 https://creativecommons.org/licenses/by/4.0/
@@ -15,8 +27,11 @@ https://creativecommons.org/licenses/by/4.0/
 // Width of the coaster at its widest point
 width = 110;
 
-// Thickness of the coaster
-thickness = 5;
+// Height of the outer walls
+outer_wall_height = 5;
+
+// Height of the inner walls
+inner_wall_height = 2;
 
 // How many rows of hexagons?
 rows = 13;
@@ -28,7 +43,7 @@ hex_wall_thickness = 0.6;
 outer_wall_thickness = 2;
 
 // Set to true for a blank center (add text in your slicer)
-customizable = true;
+space_for_text = true;
 
 // Customize the blank dimensions
 center_row_min = 4;
@@ -50,6 +65,10 @@ module hexagon(r, h) {
 // The setting (above) is for total wall thickness, but in practice
 // (below) there are back-to-back walls.
 wall_thickness = hex_wall_thickness / 2;
+
+// inner_wall_height (above) does not include the part that intesects with the
+// 1mm base.
+full_inner_wall_height = inner_wall_height + 1;
 
 // height here is the y-axis
 height = width * sin(60);
@@ -84,7 +103,7 @@ module mini_hex_plate() {
       offset_row_max = y_offset > 0 ? center_row_max : center_row_max + 1;
       for(i = [0:rows-1]) {
           y_shift = (mini_hex_height / 2) - (inner_height / 2);
-        if (!customizable ||
+        if (!space_for_text ||
             i < center_row_min ||
             i > offset_row_max ||
             col < center_col_min ||
@@ -93,7 +112,7 @@ module mini_hex_plate() {
           translate([x_offset, y_shift + y_offset, 0]) {
             // translate cells to their correct position in the column
             y_translation = i * mini_hex_height;
-            translate([0, y_translation, 0]) empty_hexagon(r=mini_hex_radius, h=thickness);
+            translate([0, y_translation, 0]) empty_hexagon(r=mini_hex_radius, h=full_inner_wall_height);
           }
         }
       }
@@ -101,13 +120,13 @@ module mini_hex_plate() {
   }
 }
 
-// Assemble all the parts
+// The large hexagon, with the inner hex removed but a plate on the bottom
 difference() {
-  hexagon(width / 2, thickness);
-  translate([0, 0, 1]) hexagon(inner_width / 2, thickness);
+  hexagon(width / 2, outer_wall_height);
+  translate([0, 0, 1]) hexagon(inner_width / 2, outer_wall_height);
 }
 
 intersection() {
   translate([-inner_width / 2, -inner_height / 2, 0]) mini_hex_plate();
-  hexagon(inner_width / 2 + 0.002, thickness);
+  hexagon(inner_width / 2 + 0.002, full_inner_wall_height);
 }
