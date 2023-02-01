@@ -55,7 +55,7 @@ center_col_min = 2;
 center_col_max = 14;
 
 // Text
-display_text = "COASTER";
+display_text = "PRUSA";
 
 font_size = 10;
 
