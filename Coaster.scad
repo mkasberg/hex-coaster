@@ -56,8 +56,8 @@ center_col_max = 14;
 
 // Text
 display_text = "PRUSA";
-
 font_size = 10;
+font = "Arial";
 
 /**
  * @param r The "radius" of the hexagon at its widest point
@@ -138,6 +138,6 @@ intersection() {
 
 if (display_text != "") {
   translate([0, 0, 1 - 0.001]) {
-    linear_extrude(inner_wall_height) text(display_text, size=font_size, halign="center", valign="center");
+    linear_extrude(inner_wall_height) text(display_text, size=font_size, font=font, halign="center", valign="center");
   }
 }
