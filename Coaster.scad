@@ -57,7 +57,7 @@ center_col_max = 14;
 // Text
 display_text = "PRUSA";
 font_size = 10;
-font = "Arial";
+font = "Arial:style=Bold";
 
 /**
  * @param r The "radius" of the hexagon at its widest point
