@@ -6,7 +6,7 @@ by Mike Kasberg
  - Mini hexagons provide a dry surface for your glass to rest on
  - (Optional) blank center to add your own text
  - Customize the size and other parameters
- - Try slicing with a color change on the mini hexes (and your text)
+ - Try muili-material printing or slicing with a color change on the mini hexes (and your text)
 
 The defaults below are reasonable, but you can customize them
 for a different size or different look.
@@ -16,7 +16,7 @@ free to experiment.
 
 Set space_for_text to true to get a blank spot in the center where
 you can add text (or anything else). Add text with Prusa Slicer 2.6+
-or with OpenSCAD, or any other software. I recomment setting the text
+or with OpenSCAD, or any other software. I recommend setting the text
 thickness (height off the surface) to be the same as inner_wall_height
 below.
 
@@ -25,7 +25,7 @@ https://creativecommons.org/licenses/by/4.0/
 */
 
 // Width of the coaster at its widest point
-width = 110;
+width = 100;
 
 // Height of the outer walls
 outer_wall_height = 5;
@@ -46,9 +46,9 @@ outer_wall_thickness = 2;
 space_for_text = true;
 
 // Customize the blank dimensions
-center_row_min = 4;
+center_row_min = 9;
 // Customize the blank dimensions
-center_row_max = 7;
+center_row_max = 15;
 // Customize the blank dimensions
 center_col_min = 2;
 // Customize the blank dimensions
@@ -100,12 +100,12 @@ module mini_hex_plate() {
     for(col = [0:2*rows]) {
       x_offset = col * 3 * mini_hex_radius * cos(60) - 0.001;
       y_offset = (col % 2 == 1) ? mini_hex_height / 2 - 0.001 : 0;
-      offset_row_max = y_offset > 0 ? center_row_max : center_row_max + 1;
       for(i = [0:rows-1]) {
-          y_shift = (mini_hex_height / 2) - (inner_height / 2);
+        row_num = y_offset > 0 ? 2 * i + 1 : 2 * i;
+        y_shift = (mini_hex_height / 2) - (inner_height / 2);
         if (!space_for_text ||
-            i < center_row_min ||
-            i > offset_row_max ||
+            row_num < center_row_min ||
+            row_num > center_row_max ||
             col < center_col_min ||
             col > center_col_max
         ) {
