@@ -18,7 +18,7 @@ Set space_for_text to true to get a blank spot in the center where
 you can add text (or anything else). Add text with Prusa Slicer 2.6+
 or with OpenSCAD, or any other software. I recommend setting the text
 thickness (height off the surface) to be the same as inner_wall_height
-below.
+below (2mm by default).
 
 LICENSE: Creative Commons - Attribution (CC BY 4.0)
 https://creativecommons.org/licenses/by/4.0/
@@ -53,6 +53,11 @@ center_row_max = 15;
 center_col_min = 2;
 // Customize the blank dimensions
 center_col_max = 14;
+
+// Text
+display_text = "COASTER";
+
+font_size = 10;
 
 /**
  * @param r The "radius" of the hexagon at its widest point
@@ -129,4 +134,10 @@ difference() {
 intersection() {
   translate([-inner_width / 2, -inner_height / 2, 0]) mini_hex_plate();
   hexagon(inner_width / 2 + 0.002, full_inner_wall_height);
+}
+
+if (display_text != "") {
+  translate([0, 0, 1 - 0.001]) {
+    linear_extrude(inner_wall_height) text(display_text, size=font_size, halign="center", valign="center");
+  }
 }
