@@ -105,7 +105,7 @@ module mini_hex_plate() {
     for(col = [0:2*rows]) {
       x_offset = col * 3 * mini_hex_radius * cos(60) - 0.001;
       y_offset = (col % 2 == 1) ? mini_hex_height / 2 - 0.001 : 0;
-      for(i = [0:rows-1]) {
+      for(i = [-1:rows-1]) {
         row_num = y_offset > 0 ? 2 * i + 1 : 2 * i;
         y_shift = (mini_hex_height / 2) - (inner_height / 2);
         if (!space_for_text ||
