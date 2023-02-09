@@ -37,7 +37,7 @@ inner_wall_height = 2;
 rows = 13;
 
 // Thickness of the hex pattern walls
-hex_wall_thickness = 0.6;
+hex_wall_thickness = 1.2;
 
 // Thickness of the outer walls
 outer_wall_thickness = 2;
@@ -78,34 +78,40 @@ full_inner_wall_height = inner_wall_height + 1;
 // height here is the y-axis
 height = width * sin(60);
 // inner_width and height is for the large hexagon, less the outer walls.
-inner_width = width - outer_wall_thickness * 2;
-inner_height = inner_width * sin(60);
-// Mini hex includes its walls
-mini_hex_height = inner_height / rows + 0.002;
+// NOTE! wall_thickness should always be applied in the height direction!
+// Using it in the width direction is slightly different because of the way wall
+// intersection works at the vertices.
+inner_height = height - 2 * outer_wall_thickness;
+inner_width = inner_height / sin(60);
+// Add back 2 * wall_thickness so the outer wall is shared (with overlap).
+mini_hex_height = (inner_height + 2 * wall_thickness) / rows + 0.002;
 mini_hex_radius = mini_hex_height / (2 * sin(60)) + 0.002;
 
 /**
  * Makes a hexagon with the center cut out.
  * Wall thickness is controlled by customization params above.
- * @param r The hexagon "radius" at its widest point
+ * @param r The hexagon "radius" in the center of the wall
  * @param h The extrusion height (z)
  */
 module empty_hexagon(r, h) {
   difference() {
-    hexagon(r, h);
-    translate([0, 0, -0.001]) hexagon(r - 2 * wall_thickness, h + 0.002);
+    hexagon(r + wall_thickness, h);
+    translate([0, 0, -0.001]) hexagon(r - wall_thickness, h + 0.002);
   }
 }
 
 /**
  * Fills the upper right quadrant with mini hexes.
+ * Because we build each hexagon around the "midpoint" of the wall (as if the walls
+ * had 0 thickness), this extends to [-wall_thickness, -wall_thickness] in the
+ * negative direction.
  */
 module mini_hex_plate() {
   translate([mini_hex_radius, inner_height / 2, 0]) {
     for(col = [0:2*rows]) {
       x_offset = col * 3 * mini_hex_radius * cos(60) - 0.001;
       y_offset = (col % 2 == 1) ? mini_hex_height / 2 - 0.001 : 0;
-      for(i = [-1:rows-1]) {
+      for(i = [0:rows-1]) {
         row_num = y_offset > 0 ? 2 * i + 1 : 2 * i;
         y_shift = (mini_hex_height / 2) - (inner_height / 2);
         if (!space_for_text ||
@@ -132,7 +138,7 @@ difference() {
 }
 
 intersection() {
-  translate([-inner_width / 2, -inner_height / 2, 0]) mini_hex_plate();
+  translate([-inner_width / 2 - wall_thickness / sin(60), -inner_height / 2 - wall_thickness, 0]) mini_hex_plate();
   hexagon(inner_width / 2 + 0.002, full_inner_wall_height);
 }
 
