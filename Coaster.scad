@@ -2,7 +2,7 @@
 Customizable Hex Coaster
 by Mike Kasberg
 
- - High edges to catch condensation and small spills
+ - (Optional) High edges to catch condensation and small spills
  - Mini hexagons provide a dry surface for your glass to rest on
  - (Optional) blank center to add your own text
  - Customize the size and other parameters
@@ -25,10 +25,10 @@ https://creativecommons.org/licenses/by/4.0/
 */
 
 // Width of the coaster at its widest point
-width = 100;
+width = 110;
 
 // Height of the outer walls
-outer_wall_height = 5;
+outer_wall_height = 3; // See full_inner_wall_height below
 
 // Height of the inner walls
 inner_wall_height = 2;
@@ -56,7 +56,7 @@ center_col_max = 14;
 
 // Text
 display_text = "PRUSA";
-font_size = 10;
+font_size = 14;
 font = "Arial:style=Bold";
 
 /**
